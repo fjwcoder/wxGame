@@ -20,8 +20,9 @@ export default class BackGround extends Sprite {
     this.top = 0
   }
 
-  update() {
-    this.top += 2
+  update(speed) {
+
+    this.top += speed // 控制背景速度
 
     if ( this.top >= screenHeight )
       this.top = 0

@@ -24,6 +24,12 @@ export default class DataBus {
     this.enemys     = []
     this.animations = []
     this.gameOver   = false
+
+    // add by fjw 
+    this.hole       = [] // 虫洞
+    this.speed      = 0 // 飞机的速度
+    this.touchTime  = 0 // 按住飞机的时间 默认 0 秒
+    this.subSpeed   = 0
   }
 
   /**
@@ -49,4 +55,17 @@ export default class DataBus {
 
     this.pool.recover('bullet', bullet)
   }
+
+  /**
+   * 回收虫洞
+   * 此后不进入帧循环
+   */
+  removeHole(hole) {
+    let temp = this.hole.shift()
+
+    temp.visible = false
+
+    this.pool.recover('hole', hole)
+  }
+
 }

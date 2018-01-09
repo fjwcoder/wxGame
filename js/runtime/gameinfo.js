@@ -10,7 +10,7 @@ export default class GameInfo {
     ctx.font      = "20px Arial"
 
     ctx.fillText(
-      score,
+      score+' km',
       10,
       30
     )

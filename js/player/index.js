@@ -16,7 +16,7 @@ export default class Player extends Sprite {
   constructor() {
     super(PLAYER_IMG_SRC, PLAYER_WIDTH, PLAYER_HEIGHT)
 
-    // 玩家默认处于屏幕底部居中位置
+    // 玩家默认处于屏幕底部居中位置 修改 by 冯建文
     this.x = screenWidth / 2 - this.width / 2
     this.y = screenHeight - this.height - 200
 
@@ -67,7 +67,7 @@ export default class Player extends Sprite {
       disY = screenHeight - this.height
 
     this.x = disX
-    this.y = disY
+    // this.y = disY
   }
 
   /**
@@ -75,16 +75,19 @@ export default class Player extends Sprite {
    * 改变战机的位置
    */
   initEvent() {
+
     canvas.addEventListener('touchstart', ((e) => {
       e.preventDefault()
 
       let x = e.touches[0].clientX
-      let y = e.touches[0].clientY
+      let y = e.touches[0].clientY 
 
-      //
       if ( this.checkIsFingerOnAir(x, y) ) {
         this.touched = true
-
+        // add by fjw : 增加摁住时间
+        databus.touchTime = 0
+        databus.speed = 100
+        databus.subSpeed = 0;
         this.setAirPosAcrossFingerPosZ(x, y)
       }
 
@@ -94,9 +97,10 @@ export default class Player extends Sprite {
       e.preventDefault()
 
       let x = e.touches[0].clientX
-      let y = e.touches[0].clientY
+      let y = e.touches[0].clientY 
 
       if ( this.touched )
+
         this.setAirPosAcrossFingerPosZ(x, y)
 
     }).bind(this))
@@ -105,22 +109,25 @@ export default class Player extends Sprite {
       e.preventDefault()
 
       this.touched = false
+      // add by fjw : 增加摁住时间
+      databus.touchTime = 0
+      databus.subSpeed = parseInt(databus.speed*0.2);
     }).bind(this))
   }
 
   /**
-   * 玩家射击操作
+   * 玩家射击操作 注释 by fjw 玩家不进行射击
    * 射击时机由外部决定
    */
-  shoot() {
-    let bullet = databus.pool.getItemByClass('bullet', Bullet)
+  // shoot() {
+  //   let bullet = databus.pool.getItemByClass('bullet', Bullet)
 
-    bullet.init(
-      this.x + this.width / 2 - bullet.width / 2,
-      this.y - 10,
-      10
-    )
+  //   bullet.init(
+  //     this.x + this.width / 2 - bullet.width / 2,
+  //     this.y - 10,
+  //     10
+  //   )
 
-    databus.bullets.push(bullet)
-  }
+  //   databus.bullets.push(bullet)
+  // }
 }

@@ -29,6 +29,13 @@ export default class Main {
     this.gameinfo = new GameInfo()
     this.music    = new Music()
 
+    // add by fjw in 18.1.9
+    this.frame = 0 // 当前秒的帧数
+    this.stopTime = 5 // 速度衰减为0的时间 默认5秒
+    this.defaultSpeed = 300 // 前三秒从0-该速度
+    this.addSpeed = 50 //每秒增加的速度
+    
+
     window.requestAnimationFrame(
       this.loop.bind(this),
       canvas
@@ -104,11 +111,11 @@ export default class Main {
 
     this.bg.render(ctx)
 
-    databus.bullets
-           .concat(databus.enemys)
-           .forEach((item) => {
-              item.drawToCanvas(ctx)
-            })
+    // databus.bullets 注释 by fjw
+    //        .concat(databus.enemys)
+    //        .forEach((item) => {
+    //           item.drawToCanvas(ctx)
+    //         })
 
     this.player.drawToCanvas(ctx)
 
@@ -127,13 +134,14 @@ export default class Main {
    * 
    */
   update() {
-    this.bg.update()
+    this.bg.update(databus.speed/100)
 
-    databus.bullets
-           .concat(databus.enemys)
-           .forEach((item) => {
-              item.update()
-            })
+    // databus.bullets 注释 by fjw
+    //        .concat(databus.enemys)
+    //        .forEach((item) => {
+    //           item.update()
+    //         })
+
     // 注释 by fjw 
     //this.enemyGenerate()
 
@@ -142,9 +150,43 @@ export default class Main {
 
   // 实现游戏帧循环
   loop() {
-    databus.score++
-    databus.frame++
+    // console.log(databus.speed);
+    // ** add by fjw **
 
+    // 按住飞机的时间
+    if(this.player.touched){
+      
+      databus.touchTime++
+      if(databus.touchTime % 60 == 0){
+
+        if(databus.speed >= this.defaultSpeed){
+          databus.speed += this.addSpeed
+        }else{
+          databus.speed += 100
+        }
+      }
+    }else{
+      if(databus.speed > 50){
+        databus.touchTime++
+        if(databus.touchTime % 60 == 0){
+          databus.speed -= parseInt(databus.speed*0.2) // databus.subSpeed
+        }
+      }else{
+        databus.speed = 0;
+      }
+    }
+
+
+    // 飞出的米数
+    if(this.frame >= 60){
+      databus.score += databus.speed // 飞出的距离
+      this.frame = 0
+    }
+    this.frame++
+    // ** end add **
+
+
+    databus.frame++ // 帧
     this.update()
     this.render()
 
